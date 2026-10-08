@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Couleurs et styles partagés par toutes les pages PARANOVA. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="Primary">#059669</Color>
+    <Color x:Key="PrimaryDark">#047857</Color>
+    <Color x:Key="Sidebar">#064E3B</Color>
+    <Color x:Key="PageBackground">#F8FAFC</Color>
+    <Color x:Key="Panel">#FFFFFF</Color>
+    <Color x:Key="TextPrimary">#0F172A</Color>
+    <Color x:Key="TextMuted">#64748B</Color>
+    <Color x:Key="Line">#E2E8F0</Color>
+
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Panel}" />
+        <Setter Property="Stroke" Value="{StaticResource Line}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="16" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Élément de menu cliquable (Border + Label) : permet l'alignement à gauche. -->
+    <Style x:Key="MenuItem" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="14,11" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="10" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MenuText" TargetType="Label">
+        <Setter Property="TextColor" Value="#D1FAE5" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalTextAlignment" Value="Start" />
+    </Style>
+
+    <Style x:Key="FilterButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="CornerRadius" Value="9" />
+        <Setter Property="HeightRequest" Value="38" />
+    </Style>
+
+    <Style x:Key="Caption" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="CharacterSpacing" Value="0.7" />
+    </Style>
+
+    <Style x:Key="MenuIcon" TargetType="Label">
+        <Setter Property="TextColor" Value="#D1FAE5" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="WidthRequest" Value="22" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HeaderCell" TargetType="Label">
+        <Setter Property="TextColor" Value="#475569" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="BodyCell" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
+    </Style>
+
+    <Style x:Key="PagerButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="BorderColor" Value="{StaticResource Line}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="HeightRequest" Value="34" />
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MauiApp1.Views"
+             x:Class="MauiApp1.Views.VentesView"
+             x:DataType="local:ColumnSettings">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Paranova.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <!-- BindingContext = ColumnSettings (voir VentesView.xaml.cs). -->
+    <Grid Padding="20" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+
+        <!-- Barre d'outils : recherche, taille de page, choix des colonnes. -->
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <Border Padding="12,0" BackgroundColor="White" Stroke="{StaticResource Line}" HeightRequest="40" MaximumWidthRequest="420" HorizontalOptions="Start">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="🔍" VerticalTextAlignment="Center" TextColor="{StaticResource TextMuted}" />
+                    <Entry x:Name="SearchEntry"
+                           Placeholder="Rechercher un code, un nom, une catégorie…"
+                           TextChanged="OnSearchChanged"
+                           WidthRequest="340"
+                           FontSize="13"
+                           TextColor="{StaticResource TextPrimary}"
+                           BackgroundColor="Transparent"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                <Label Text="Lignes :" FontSize="12" TextColor="{StaticResource TextMuted}" VerticalTextAlignment="Center" />
+                <Picker x:Name="PageSizePicker" SelectedIndexChanged="OnPageSizeChanged" WidthRequest="70" FontSize="12">
+                    <Picker.Items>
+                        <x:String>5</x:String>
+                        <x:String>10</x:String>
+                        <x:String>20</x:String>
+                        <x:String>50</x:String>
+                    </Picker.Items>
+                </Picker>
+            </HorizontalStackLayout>
+
+            <Button Grid.Column="2"
+                    x:Name="ColumnsButton"
+                    Text="▥  Colonnes ▾"
+                    Clicked="OnColumnsClicked"
+                    Style="{StaticResource PagerButton}"
+                    FontAttributes="Bold" />
+        </Grid>
+
+        <!-- Liste des colonnes à afficher (ouverte par le bouton « Colonnes »). -->
+        <Border Grid.Row="1" x:Name="ColumnsPanel" IsVisible="False" Style="{StaticResource Card}" Padding="12,8">
+            <FlexLayout Wrap="Wrap" AlignItems="Center">
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowCode}" Color="{StaticResource Primary}" /><Label Text="Code" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowNom}" Color="{StaticResource Primary}" /><Label Text="Désignation" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowCategorie}" Color="{StaticResource Primary}" /><Label Text="Catégorie" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowPrix}" Color="{StaticResource Primary}" /><Label Text="Prix" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowStock}" Color="{StaticResource Primary}" /><Label Text="Stock" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowActif}" Color="{StaticResource Primary}" /><Label Text="Actif" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,18,0"><CheckBox IsChecked="{Binding ShowRemboursable}" Color="{StaticResource Primary}" /><Label Text="Remboursable" VerticalTextAlignment="Center" FontSize="12" /></HorizontalStackLayout>
+            </FlexLayout>
+        </Border>
+
+        <!-- Tableau + pagination. -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Padding="0">
+            <Grid RowDefinitions="*,Auto">
+                <ScrollView Orientation="Both">
+                    <VerticalStackLayout>
+                        <!-- En-têtes : un clic trie la colonne (▲ / ▼). -->
+                        <HorizontalStackLayout HeightRequest="42" BackgroundColor="#F1F5F9">
+                            <Label x:Name="HdrCode" Text="CODE" Style="{StaticResource HeaderCell}" WidthRequest="100" IsVisible="{Binding ShowCode}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Code" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrNom" Text="DÉSIGNATION" Style="{StaticResource HeaderCell}" WidthRequest="250" IsVisible="{Binding ShowNom}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Nom" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrCategorie" Text="CATÉGORIE" Style="{StaticResource HeaderCell}" WidthRequest="140" IsVisible="{Binding ShowCategorie}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Categorie" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrPrix" Text="PRIX TTC" Style="{StaticResource HeaderCell}" WidthRequest="120" HorizontalTextAlignment="End" IsVisible="{Binding ShowPrix}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Prix" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrStock" Text="STOCK" Style="{StaticResource HeaderCell}" WidthRequest="100" HorizontalTextAlignment="Center" IsVisible="{Binding ShowStock}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Stock" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrActif" Text="ACTIF" Style="{StaticResource HeaderCell}" WidthRequest="100" HorizontalTextAlignment="Center" IsVisible="{Binding ShowActif}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Actif" /></Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="HdrRemboursable" Text="REMBOURSABLE" Style="{StaticResource HeaderCell}" WidthRequest="130" HorizontalTextAlignment="Center" IsVisible="{Binding ShowRemboursable}">
+                                <Label.GestureRecognizers><TapGestureRecognizer Tapped="OnSortTapped" CommandParameter="Remboursable" /></Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+
+                        <!-- Lignes de la page courante. -->
+                        <VerticalStackLayout x:Name="RowsHost">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="local:Produit">
+                                    <VerticalStackLayout BackgroundColor="{Binding RowColor}">
+                                        <HorizontalStackLayout HeightRequest="46">
+                                            <Label Text="{Binding Code}" Style="{StaticResource BodyCell}" WidthRequest="100" TextColor="{StaticResource TextMuted}" IsVisible="{Binding Cols.ShowCode}" />
+                                            <Label Text="{Binding Nom}" Style="{StaticResource BodyCell}" WidthRequest="250" FontAttributes="Bold" IsVisible="{Binding Cols.ShowNom}" />
+                                            <Label Text="{Binding Categorie}" Style="{StaticResource BodyCell}" WidthRequest="140" IsVisible="{Binding Cols.ShowCategorie}" />
+                                            <Label Text="{Binding PrixText}" Style="{StaticResource BodyCell}" WidthRequest="120" HorizontalTextAlignment="End" IsVisible="{Binding Cols.ShowPrix}" />
+                                            <Grid WidthRequest="100" IsVisible="{Binding Cols.ShowStock}">
+                                                <Border Padding="10,3" StrokeThickness="0" BackgroundColor="{Binding StockBackground}" HorizontalOptions="Center" VerticalOptions="Center">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="10" />
+                                                    </Border.StrokeShape>
+                                                    <Label Text="{Binding Stock}" TextColor="{Binding StockColor}" FontSize="12" FontAttributes="Bold" />
+                                                </Border>
+                                            </Grid>
+                                            <Grid WidthRequest="100" IsVisible="{Binding Cols.ShowActif}">
+                                                <Switch IsToggled="{Binding Actif}" OnColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                            </Grid>
+                                            <Grid WidthRequest="130" IsVisible="{Binding Cols.ShowRemboursable}">
+                                                <Switch IsToggled="{Binding Remboursable}" OnColor="#2563EB" HorizontalOptions="Center" VerticalOptions="Center" />
+                                            </Grid>
+                                        </HorizontalStackLayout>
+                                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource Line}" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <Label x:Name="EmptyLabel"
+                               Text="Aucun article ne correspond à la recherche."
+                               IsVisible="False"
+                               Padding="16,24"
+                               TextColor="{StaticResource TextMuted}"
+                               FontSize="13" />
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Pagination. -->
+                <Grid Grid.Row="1" Padding="14,10" ColumnDefinitions="*,Auto" BackgroundColor="#F8FAFC">
+                    <Label x:Name="CountLabel" FontSize="12" TextColor="{StaticResource TextMuted}" VerticalTextAlignment="Center" />
+                    <HorizontalStackLayout Grid.Column="1" Spacing="6">
+                        <Button x:Name="FirstButton" Text="«" Clicked="OnFirstClicked" Style="{StaticResource PagerButton}" />
+                        <Button x:Name="PrevButton" Text="‹ Préc." Clicked="OnPrevClicked" Style="{StaticResource PagerButton}" />
+                        <Label x:Name="PageLabel" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" VerticalTextAlignment="Center" Margin="6,0" />
+                        <Button x:Name="NextButton" Text="Suiv. ›" Clicked="OnNextClicked" Style="{StaticResource PagerButton}" />
+                        <Button x:Name="LastButton" Text="»" Clicked="OnLastClicked" Style="{StaticResource PagerButton}" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentView>
