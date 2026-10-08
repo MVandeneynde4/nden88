@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp1.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F8FAFC">
+
+    <ContentPage.Resources>
+        <Color x:Key="Primary">#059669</Color>
+        <Color x:Key="PrimaryDark">#047857</Color>
+        <Color x:Key="Sidebar">#064E3B</Color>
+        <Color x:Key="PageBackground">#F8FAFC</Color>
+        <Color x:Key="Panel">#FFFFFF</Color>
+        <Color x:Key="TextPrimary">#0F172A</Color>
+        <Color x:Key="TextMuted">#64748B</Color>
+        <Color x:Key="Line">#E2E8F0</Color>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource Panel}" />
+            <Setter Property="Stroke" Value="{StaticResource Line}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="16" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Élément de menu cliquable (Border + Label) : permet l'alignement à gauche. -->
+        <Style x:Key="MenuItem" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Padding" Value="14,11" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="10" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MenuText" TargetType="Label">
+            <Setter Property="TextColor" Value="#D1FAE5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+        </Style>
+
+        <Style x:Key="FilterButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="HeightRequest" Value="38" />
+        </Style>
+
+        <Style x:Key="Caption" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="CharacterSpacing" Value="0.7" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid x:Name="PageGrid" ColumnDefinitions="Auto,*">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="Compact">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter TargetName="SidebarPanel" Property="IsVisible" Value="False" />
+                        <Setter TargetName="MobileMenuButton" Property="IsVisible" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="900" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter TargetName="SidebarPanel" Property="IsVisible" Value="True" />
+                        <Setter TargetName="MobileMenuButton" Property="IsVisible" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- Menu latéral, proche du tableau de bord PARANOVA. -->
+        <Border x:Name="SidebarPanel"
+                Grid.Column="0"
+                WidthRequest="238"
+                Padding="16,22"
+                BackgroundColor="{StaticResource Sidebar}"
+                StrokeThickness="0">
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="24">
+                <HorizontalStackLayout Spacing="11" VerticalOptions="Center">
+                    <Border WidthRequest="42"
+                            HeightRequest="42"
+                            Padding="0"
+                            BackgroundColor="White"
+                            StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Label Text="✚"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="23"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center" />
+                    </Border>
+                    <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                        <Label Text="PARANOVA"
+                               TextColor="White"
+                               FontSize="19"
+                               FontAttributes="Bold" />
+                        <Label Text="Gestion de pharmacie"
+                               TextColor="#A7F3D0"
+                               FontSize="10" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <ScrollView Grid.Row="1">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="MENU PRINCIPAL"
+                               Margin="12,4,0,4"
+                               TextColor="#6EE7B7"
+                               FontSize="10"
+                               FontAttributes="Bold" />
+
+                        <Border Style="{StaticResource MenuItem}" BackgroundColor="#0F766E">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="dashboard" /></Border.GestureRecognizers>
+                            <Label Text="▦   Tableau de bord" Style="{StaticResource MenuText}" TextColor="White" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="ventes" /></Border.GestureRecognizers>
+                            <Label Text="🛒   Ventes &amp; Comptoir" Style="{StaticResource MenuText}" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="ordonnances" /></Border.GestureRecognizers>
+                            <Label Text="▤   Ordonnances" Style="{StaticResource MenuText}" />
+                        </Border>
+
+                        <Label Text="ACHATS &amp; STOCKS"
+                               Margin="12,18,0,4"
+                               TextColor="#6EE7B7"
+                               FontSize="10"
+                               FontAttributes="Bold" />
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="achats" /></Border.GestureRecognizers>
+                            <Label Text="↓   Achats &amp; Réceptions" Style="{StaticResource MenuText}" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="stock" /></Border.GestureRecognizers>
+                            <Label Text="▣   État du stock" Style="{StaticResource MenuText}" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="inventaire" /></Border.GestureRecognizers>
+                            <Label Text="✓   Inventaire" Style="{StaticResource MenuText}" />
+                        </Border>
+
+                        <Label Text="CATALOGUE &amp; TIERS"
+                               Margin="12,18,0,4"
+                               TextColor="#6EE7B7"
+                               FontSize="10"
+                               FontAttributes="Bold" />
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="articles" /></Border.GestureRecognizers>
+                            <Label Text="●   Articles &amp; Produits" Style="{StaticResource MenuText}" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="fournisseurs" /></Border.GestureRecognizers>
+                            <Label Text="♙   Fournisseurs" Style="{StaticResource MenuText}" />
+                        </Border>
+                        <Border Style="{StaticResource MenuItem}">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" CommandParameter="patients" /></Border.GestureRecognizers>
+                            <Label Text="♟   Patients &amp; AMO" Style="{StaticResource MenuText}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Border Grid.Row="2"
+                        Padding="12"
+                        BackgroundColor="#065F46"
+                        Stroke="#047857">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Border WidthRequest="34"
+                                HeightRequest="34"
+                                Padding="0"
+                                BackgroundColor="#10B981"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="17" />
+                            </Border.StrokeShape>
+                            <Label Text="AD"
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                            <Label Text="Administrateur" TextColor="White" FontSize="12" FontAttributes="Bold" />
+                            <Label Text="Session active" TextColor="#A7F3D0" FontSize="10" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Zone principale. -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,*" BackgroundColor="{StaticResource PageBackground}">
+            <Border Grid.Row="0"
+                    Padding="20,12"
+                    BackgroundColor="White"
+                    Stroke="{StaticResource Line}"
+                    StrokeThickness="1">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                    <Button x:Name="MobileMenuButton"
+                            Text="☰"
+                            IsVisible="False"
+                            WidthRequest="42"
+                            HeightRequest="42"
+                            Padding="0"
+                            FontSize="21"
+                            BackgroundColor="#ECFDF5"
+                            TextColor="{StaticResource Primary}"
+                            CornerRadius="11" />
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                        <Label Text="Tableau de bord"
+                               TextColor="{StaticResource TextPrimary}"
+                               FontSize="21"
+                               FontAttributes="Bold" />
+                        <Label Text="Situation financière et activité de la pharmacie"
+                               TextColor="{StaticResource TextMuted}"
+                               FontSize="11" />
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout Grid.Column="2" Spacing="12" VerticalOptions="Center">
+                        <VerticalStackLayout Spacing="0" HorizontalOptions="End">
+                            <Label Text="09:42" TextColor="{StaticResource TextPrimary}" FontSize="14" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                            <Label Text="Lundi 5 octobre 2026" TextColor="{StaticResource TextMuted}" FontSize="10" HorizontalTextAlignment="End" />
+                        </VerticalStackLayout>
+                        <Button Text="☼"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                Padding="0"
+                                FontSize="18"
+                                BackgroundColor="#F1F5F9"
+                                TextColor="{StaticResource TextPrimary}"
+                                CornerRadius="10" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="20" Spacing="14">
+                    <!-- Période et filtres. -->
+                    <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Center">
+                        <Border Padding="4"
+                                Margin="0,0,10,8"
+                                BackgroundColor="White"
+                                Stroke="{StaticResource Line}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="2">
+                                <Button Text="Aujourd'hui" Style="{StaticResource FilterButton}" />
+                                <Button Text="7 jours" Style="{StaticResource FilterButton}" />
+                                <Button Text="Ce mois"
+                                        Style="{StaticResource FilterButton}"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        TextColor="White" />
+                                <Button Text="Année" Style="{StaticResource FilterButton}" />
+                            </HorizontalStackLayout>
+                        </Border>
+
+                        <Border Padding="8,4"
+                                Margin="0,0,10,8"
+                                BackgroundColor="White"
+                                Stroke="{StaticResource Line}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                <DatePicker Date="2026-10-01" FontSize="11" TextColor="{StaticResource TextPrimary}" />
+                                <Label Text="→" TextColor="{StaticResource TextMuted}" VerticalTextAlignment="Center" />
+                                <DatePicker Date="2026-10-05" FontSize="11" TextColor="{StaticResource TextPrimary}" />
+                                <Picker Title="Tous types" WidthRequest="126" FontSize="11">
+                                    <Picker.Items>
+                                        <x:String>Tous types</x:String>
+                                        <x:String>Pharmacie</x:String>
+                                        <x:String>Parapharmacie</x:String>
+                                        <x:String>Diététique</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                                <Button Text="Appliquer"
+                                        Padding="13,7"
+                                        HeightRequest="36"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        TextColor="White"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        CornerRadius="8" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </FlexLayout>
+
+                    <!-- Indicateurs financiers. FlexLayout les replie sur les petits écrans. -->
+                    <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Stretch">
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#059669" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="↗" TextColor="#059669" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="CHIFFRE D'AFFAIRES TTC" Style="{StaticResource Caption}" />
+                                    <Label Text="148 450 DH" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="▲ 8,4 % vs période précédente" TextColor="#059669" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#2563EB" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="%" TextColor="#2563EB" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="MARGE BRUTE" Style="{StaticResource Caption}" />
+                                    <Label Text="37 860 DH" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="Taux 27,3 % du CA HT" TextColor="{StaticResource TextMuted}" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#EF4444" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="−" TextColor="#EF4444" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="DÉPENSES" Style="{StaticResource Caption}" />
+                                    <Label Text="12 320 DH" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="▼ 3,1 % vs période précédente" TextColor="#059669" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#059669" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="=" TextColor="#059669" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="RÉSULTAT NET" Style="{StaticResource Caption}" />
+                                    <Label Text="25 540 DH" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="Marge brute − dépenses" TextColor="{StaticResource TextMuted}" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#8B5CF6" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="▣" TextColor="#8B5CF6" FontSize="20" FontAttributes="Bold" />
+                                    <Label Text="ENCAISSEMENTS" Style="{StaticResource Caption}" />
+                                    <Label Text="142 100 DH" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="▲ 6,7 %" TextColor="#059669" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="190" FlexLayout.Grow="1" Margin="0,0,0,12">
+                            <Grid ColumnDefinitions="5,*" ColumnSpacing="12">
+                                <BoxView BackgroundColor="#F59E0B" CornerRadius="3" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                    <Label Text="🛍" TextColor="#F59E0B" FontSize="20" />
+                                    <Label Text="VENTES" Style="{StaticResource Caption}" />
+                                    <Label Text="384" TextColor="{StaticResource TextPrimary}" FontSize="23" FontAttributes="Bold" />
+                                    <Label Text="Panier moyen 386,59 DH" TextColor="{StaticResource TextMuted}" FontSize="10" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </FlexLayout>
+
+                    <!-- Graphique et trésorerie. -->
+                    <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Stretch">
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="560" FlexLayout.Grow="2" Margin="0,0,12,12">
+                            <VerticalStackLayout Spacing="14">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Évolution : ventes, encaissements et dépenses"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           FontSize="14"
+                                           FontAttributes="Bold" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="11">
+                                        <Label Text="● CA" TextColor="#059669" FontSize="10" />
+                                        <Label Text="● Encaissé" TextColor="#8B5CF6" FontSize="10" />
+                                        <Label Text="● Dépenses" TextColor="#EF4444" FontSize="10" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <!-- Mini graphique natif, remplaçable ensuite par LiveCharts. -->
+                                <Grid HeightRequest="190" RowDefinitions="*,Auto">
+                                    <Grid RowDefinitions="*,*,*,*" Opacity="0.9">
+                                        <BoxView Grid.Row="0" HeightRequest="1" BackgroundColor="#E2E8F0" VerticalOptions="End" />
+                                        <BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="#E2E8F0" VerticalOptions="End" />
+                                        <BoxView Grid.Row="2" HeightRequest="1" BackgroundColor="#E2E8F0" VerticalOptions="End" />
+                                        <BoxView Grid.Row="3" HeightRequest="1" BackgroundColor="#E2E8F0" VerticalOptions="End" />
+                                    </Grid>
+                                    <Grid Padding="10,12,10,0" ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="12" VerticalOptions="End">
+                                        <BoxView Grid.Column="0" HeightRequest="58" BackgroundColor="#A7F3D0" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="1" HeightRequest="83" BackgroundColor="#6EE7B7" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="2" HeightRequest="72" BackgroundColor="#34D399" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="3" HeightRequest="105" BackgroundColor="#10B981" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="4" HeightRequest="91" BackgroundColor="#34D399" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="5" HeightRequest="128" BackgroundColor="#059669" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                        <BoxView Grid.Column="6" HeightRequest="116" BackgroundColor="#047857" CornerRadius="5,5,0,0" VerticalOptions="End" />
+                                    </Grid>
+                                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,*,*">
+                                        <Label Grid.Column="0" Text="29 sept." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="1" Text="30 sept." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="2" Text="1 oct." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="3" Text="2 oct." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="4" Text="3 oct." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="5" Text="4 oct." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                        <Label Grid.Column="6" Text="5 oct." HorizontalTextAlignment="Center" FontSize="9" TextColor="{StaticResource TextMuted}" />
+                                    </Grid>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="320" FlexLayout.Grow="1" Margin="0,0,0,12">
+                            <VerticalStackLayout Spacing="13">
+                                <Label Text="Trésorerie &amp; engagements"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       FontSize="14"
+                                       FontAttributes="Bold" />
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <Border Padding="11" BackgroundColor="#FFFBEB" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="4">
+                                            <Label Text="À ENCAISSER" TextColor="#B45309" FontSize="10" FontAttributes="Bold" />
+                                            <Label Text="8 450 DH" TextColor="{StaticResource TextPrimary}" FontSize="19" FontAttributes="Bold" />
+                                            <Label Text="12 clients" TextColor="{StaticResource TextMuted}" FontSize="10" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border Grid.Column="1" Padding="11" BackgroundColor="#FFF1F2" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="4">
+                                            <Label Text="À PAYER" TextColor="#BE123C" FontSize="10" FontAttributes="Bold" />
+                                            <Label Text="21 600 DH" TextColor="{StaticResource TextPrimary}" FontSize="19" FontAttributes="Bold" />
+                                            <Label Text="Fournisseurs" TextColor="{StaticResource TextMuted}" FontSize="10" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto" Padding="0,6">
+                                    <Label Text="Achats période" TextColor="{StaticResource TextMuted}" FontSize="12" />
+                                    <Label Grid.Column="1" Text="84 200 DH" TextColor="{StaticResource TextPrimary}" FontSize="12" FontAttributes="Bold" />
+                                </Grid>
+                                <BoxView HeightRequest="1" BackgroundColor="{StaticResource Line}" />
+                                <Grid ColumnDefinitions="*,Auto" Padding="0,6">
+                                    <Label Text="TVA nette à reverser" TextColor="{StaticResource TextMuted}" FontSize="12" />
+                                    <Label Grid.Column="1" Text="6 340 DH" TextColor="#D97706" FontSize="12" FontAttributes="Bold" />
+                                </Grid>
+                                <BoxView HeightRequest="1" BackgroundColor="{StaticResource Line}" />
+                                <Grid ColumnDefinitions="*,Auto" Padding="0,6">
+                                    <Label Text="Caisses ouvertes" TextColor="{StaticResource TextMuted}" FontSize="12" />
+                                    <Label Grid.Column="1" Text="2" TextColor="#059669" FontSize="12" FontAttributes="Bold" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </FlexLayout>
+
+                    <!-- Meilleures ventes et santé du stock. -->
+                    <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Stretch">
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="420" FlexLayout.Grow="1" Margin="0,0,12,12">
+                            <VerticalStackLayout Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Meilleures ventes" TextColor="{StaticResource TextPrimary}" FontSize="14" FontAttributes="Bold" />
+                                    <Label Grid.Column="1" Text="Rapports →" TextColor="{StaticResource Primary}" FontSize="11" FontAttributes="Bold" />
+                                </Grid>
+
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="1. DOLIPRANE 1000 MG" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <Label Grid.Column="1" Text="12 840 DH" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Progress="0.92" ProgressColor="#059669" BackgroundColor="#E2E8F0" HeightRequest="7" Margin="0,5,0,0" />
+                                </Grid>
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="2. EFFERALGAN 1 G" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <Label Grid.Column="1" Text="9 620 DH" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Progress="0.71" ProgressColor="#10B981" BackgroundColor="#E2E8F0" HeightRequest="7" Margin="0,5,0,0" />
+                                </Grid>
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Label Text="3. VITAMINE C 1000" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <Label Grid.Column="1" Text="7 450 DH" TextColor="{StaticResource TextPrimary}" FontSize="11" FontAttributes="Bold" />
+                                    <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Progress="0.55" ProgressColor="#34D399" BackgroundColor="#E2E8F0" HeightRequest="7" Margin="0,5,0,0" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" FlexLayout.Basis="420" FlexLayout.Grow="1" Margin="0,0,0,12">
+                            <VerticalStackLayout Spacing="14">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="Santé du stock" TextColor="{StaticResource TextPrimary}" FontSize="14" FontAttributes="Bold" />
+                                    <Label Grid.Column="1" Text="Stock →" TextColor="{StaticResource Primary}" FontSize="11" FontAttributes="Bold" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9">
+                                    <Border Padding="10" BackgroundColor="#FFF1F2" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="RUPTURES" TextColor="#E11D48" FontSize="9" FontAttributes="Bold" />
+                                            <Label Text="18" TextColor="{StaticResource TextPrimary}" FontSize="21" FontAttributes="Bold" />
+                                            <Label Text="sur 5 195 réf." TextColor="{StaticResource TextMuted}" FontSize="9" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border Grid.Column="1" Padding="10" BackgroundColor="#FFFBEB" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="ALERTES" TextColor="#D97706" FontSize="9" FontAttributes="Bold" />
+                                            <Label Text="43" TextColor="{StaticResource TextPrimary}" FontSize="21" FontAttributes="Bold" />
+                                            <Label Text="sous le seuil" TextColor="{StaticResource TextMuted}" FontSize="9" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border Grid.Column="2" Padding="10" BackgroundColor="#F5F3FF" StrokeThickness="0">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="12" />
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="PÉREMPTION" TextColor="#7C3AED" FontSize="9" FontAttributes="Bold" />
+                                            <Label Text="7" TextColor="{StaticResource TextPrimary}" FontSize="21" FontAttributes="Bold" />
+                                            <Label Text="&lt; 90 jours" TextColor="{StaticResource TextMuted}" FontSize="9" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto" Padding="0,5">
+                                    <Label Text="Valeur du stock (prix d'achat)" TextColor="{StaticResource TextMuted}" FontSize="11" />
+                                    <Label Grid.Column="1" Text="1 284 600 DH" TextColor="{StaticResource TextPrimary}" FontSize="12" FontAttributes="Bold" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>
