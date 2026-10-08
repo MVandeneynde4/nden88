@@ -11,6 +11,6 @@ public partial class MainPage : ContentPage
     private async void OnMenuTapped(object? sender, TappedEventArgs e)
     {
         var page = e.Parameter as string;
-        await DisplayAlert("Menu", $"Page : {page}", "OK");
+        await DisplayAlertAsync("Menu", $"Page : {page}", "OK");
     }
 }
